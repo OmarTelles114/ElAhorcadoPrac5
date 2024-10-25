@@ -13,7 +13,7 @@ public class Main {
             System.out.println("Ingrese el número de jugadores (2-4):");
             numJugadores = Integer.parseInt(scanner.nextLine());
             if (numJugadores < 2 || numJugadores > 4) {
-                System.out.println("Valor Inválido, intenta de nuevo");
+                System.out.println("Valor inválido, inténtalo de nuevo.");
             }
         } while (numJugadores < 2 || numJugadores > 4);
 
@@ -30,7 +30,7 @@ public class Main {
             System.out.println("Ingrese los puntos necesarios para ganar (mayor a 0):");
             puntosParaGanar = Integer.parseInt(scanner.nextLine());
             if (puntosParaGanar <= 0) {
-                System.out.println("Valor Inválido, intenta de nuevo");
+                System.out.println("Valor inválido, inténtalo de nuevo.");
             }
         } while (puntosParaGanar <= 0);
 
@@ -44,22 +44,24 @@ public class Main {
 
             boolean fraseAdivinada = false;
             letrasUsadas.clear();
+            Jugador ganadorRonda = null;
 
             // Ciclo de turnos para los jugadores
             while (!fraseAdivinada) {
                 for (Jugador jugador : jugadores) {
                     if (fraseAdivinada) break;
                     fraseAdivinada = turnoJugador(jugador, frase, letrasUsadas, scanner);
+                    if (fraseAdivinada) {
+                        ganadorRonda = jugador;
+                        break;
+                    }
                 }
             }
 
             // Asignar 5 puntos al ganador de la ronda
-            for (Jugador jugador : jugadores) {
-                if (frase.fraseAdivinada()) {
-                    jugador.agregarPuntos(5);
-                    System.out.println("¡" + jugador.getNombre() + " ganó esta ronda y recibió 5 puntos extra!");
-                    break;
-                }
+            if (ganadorRonda != null) {
+                ganadorRonda.agregarPuntos(5);
+                System.out.println("\n¡" + ganadorRonda.getNombre() + " ganó esta ronda y recibió 5 puntos extra!");
             }
 
             // Mostrar puntajes al final de la ronda
@@ -106,6 +108,7 @@ public class Main {
             if (letrasUsadas.contains(letra)) {
                 System.out.println("Ya ingresaste esa letra antes. Pierdes 3 puntos.");
                 jugador.agregarPuntos(-3);
+                break;
             } else if (frase.letraEstaEnFrase(letra)) {
                 int ocurrencias = frase.contarOcurrenciasLetra(letra);
                 int puntosGanados = 3 * ocurrencias;
@@ -118,7 +121,7 @@ public class Main {
                 System.out.println("Frase actualizada: " + frase.mostrarFraseOculta());
 
                 if (frase.fraseAdivinada()) {
-                    return true;
+                    return true; // La frase fue adivinada
                 }
             } else {
                 System.out.println("La letra no está en la frase. Pierdes 1 punto.");
@@ -128,6 +131,6 @@ public class Main {
             }
         }
 
-        return false;
+        return false; // La frase no ha sido adivinada
     }
 }
